@@ -35,6 +35,20 @@ const CATALOG_CATEGORIES = Object.freeze([
 const UNDO_TIMEOUT_MS = 6000;
 
 /**
+ * Κανονικοποίηση κειμένου για αναζήτηση χωρίς διάκριση τόνων / πεζών-κεφαλαίων.
+ * Π.χ. «ηχος» και «Ήχος» θεωρούνται ίδια.
+ * @param {unknown} value
+ * @returns {string}
+ */
+function normalizeSearchText(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('el-GR')
+    .replace(/ς/g, 'σ');
+}
+
+/**
  * 12 ενδεικτικά προϊόντα τεχνολογίας & περιφερειακών γραφείου.
  * Φορτώνονται αυτόματα μόνο κατά την πρώτη επίσκεψη (όταν δεν υπάρχει κλειδί 'products').
  */
@@ -781,7 +795,7 @@ class ProductStore {
    * }} options
    */
   query({ search, category, availability, sortBy, sortDir, page, pageSize }) {
-    const queryText = String(search ?? '').trim().toLocaleLowerCase('el-GR');
+    const queryText = normalizeSearchText(String(search ?? '').trim());
 
     // 1. Φιλτράρισμα & Αναζήτηση
     let filtered = this.products.filter((product) => {
@@ -793,7 +807,9 @@ class ProductStore {
       if (availability === 'OUT_OF_STOCK' && product.available) return false;
 
       if (queryText) {
-        const haystack = `${product.name} ${product.category} ${product.description}`.toLocaleLowerCase('el-GR');
+        const haystack = normalizeSearchText(
+          `${product.name} ${product.category} ${product.description}`
+        );
         if (!haystack.includes(queryText)) return false;
       }
 
