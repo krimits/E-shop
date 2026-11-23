@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KADRO — Mini E-shop Τεχνολογίας &amp; Περιφερειακών</title>
+  <meta
+    name="description"
+    content="Εφαρμογή μίας σελίδας (SPA) σε καθαρό HTML5, CSS3 και JavaScript για διαχείριση καταλόγου προϊόντων (CRUD), αναζήτηση, φιλτράρισμα, ταξινόμηση, σελιδοποίηση, εξαγωγή/εισαγωγή και εγγραφή πελατών με ζωντανή επικύρωση."
+  />
+  <meta property="og:title" content="KADRO — Mini E-shop Τεχνολογίας &amp; Περιφερειακών" />
+  <meta
+    property="og:description"
+    content="Εφαρμογή μίας σελίδας (SPA) σε καθαρό HTML5, CSS3 και JavaScript για διαχείριση καταλόγου προϊόντων (CRUD) και εγγραφή πελατών."
+  />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Τυπογραφία (Plus Jakarta Sans, Manrope, IBM Plex Mono) με πλήρη ελληνική υποστήριξη και ασφαλή fallback για offline άνοιγμα -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="./style.css" />
+  <script src="./logic.js" defer></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Μετάβαση στο κύριο περιεχόμενο</a>
+
+  <!-- Κεφαλίδα 3 ζωνών: Wordmark | Πλοήγηση | Κύρια Ενέργεια -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#main-content" class="brand-wordmark">KADRO</a>
+
+      <nav class="primary-nav" aria-label="Κύρια πλοήγηση">
+        <a href="#catalog-section" class="nav-link">Κατάλογος</a>
+        <a href="#product-form-section" class="nav-link">Προσθήκη</a>
+        <a href="#data-tools-section" class="nav-link">Αρχεία</a>
+        <a href="#registration-section" class="nav-link">Εγγραφή Πελάτη</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" id="cta-new-product" class="btn btn-primary">
+          Νέο προϊόν
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-main">
+    <!-- Εισαγωγική Ενότητα & Συνοπτική Εικόνα Καταλόγου -->
+    <section class="intro-section" aria-labelledby="page-title">
+      <div class="container">
+        <div class="intro-header">
+          <p class="eyebrow">Τεχνολογία &amp; Περιφερειακά Γραφείου</p>
+          <h1 id="page-title" class="page-title">Διαχείριση Καταλόγου Προϊόντων</h1>
+          <p class="page-lead">
+            Προσθέστε, επεξεργαστείτε, ταξινομήστε και φιλτράρετε τον κατάλογο σε πραγματικό χρόνο με μόνιμη τοπική αποθήκευση.
+          </p>
+        </div>
+
+        <!-- 4-στηλη γραμμή δεικτών (tabular numerals) -->
+        <dl class="metrics-strip" aria-label="Σύνοψη καταλόγου">
+          <div class="metric-item">
+            <dt class="metric-label">Σύνολο προϊόντων</dt>
+            <dd id="metric-total" class="metric-value tabular-nums">0</dd>
+          </div>
+          <div class="metric-item">
+            <dt class="metric-label">Άμεσα διαθέσιμα</dt>
+            <dd id="metric-available" class="metric-value tabular-nums">0</dd>
+          </div>
+          <div class="metric-item">
+            <dt class="metric-label">Ενεργές κατηγορίες</dt>
+            <dd id="metric-categories" class="metric-value tabular-nums">0</dd>
+          </div>
+          <div class="metric-item">
+            <dt class="metric-label">Μέση τιμή καταλόγου</dt>
+            <dd id="metric-avg-price" class="metric-value tabular-nums">0,00 €</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Ενότητα 1: Κατάλογος Προϊόντων, Αναζήτηση, Φίλτρα, Ταξινόμηση & Σελιδοποίηση -->
+    <section id="catalog-section" class="content-section" aria-labelledby="catalog-heading">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <h2 id="catalog-heading" class="section-title">01. Κατάλογος Προϊόντων</h2>
+            <p class="section-subtitle">
+              Κλικ στις κεφαλίδες στηλών για αύξουσα ή φθίνουσα ταξινόμηση.
+            </p>
+          </div>
+          <p id="results-summary" class="results-summary tabular-nums" aria-live="polite"></p>
+        </div>
+
+        <!-- Γραμμή Αναζήτησης & Φίλτρων -->
+        <div class="toolbar" role="search" aria-label="Αναζήτηση και φίλτρα προϊόντων">
+          <div class="toolbar-field toolbar-search">
+            <label for="search-input" class="field-label">Αναζήτηση</label>
+            <div class="search-input-wrap">
+              <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.6" />
+                <path d="M13.2 13.2L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+              <input
+                type="search"
+                id="search-input"
+                class="text-input has-leading-icon"
+                placeholder="Όνομα προϊόντος, κατηγορία ή περιγραφή..."
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="toolbar-field">
+            <label for="category-filter" class="field-label">Κατηγορία</label>
+            <select id="category-filter" class="select-input">
+              <option value="ALL">Όλες οι κατηγορίες</option>
+              <option value="Πληκτρολόγια">Πληκτρολόγια</option>
+              <option value="Ποντίκια">Ποντίκια</option>
+              <option value="Οθόνες">Οθόνες</option>
+              <option value="Ήχος">Ήχος</option>
+              <option value="Αξεσουάρ Γραφείου">Αξεσουάρ Γραφείου</option>
+            </select>
+          </div>
+
+          <div class="toolbar-field">
+            <label for="availability-filter" class="field-label">Διαθεσιμότητα</label>
+            <select id="availability-filter" class="select-input">
+              <option value="ALL">Όλες</option>
+              <option value="IN_STOCK">Διαθέσιμα</option>
+              <option value="OUT_OF_STOCK">Εξαντλημένα</option>
+            </select>
+          </div>
+
+          <div class="toolbar-field toolbar-page-size">
+            <label for="page-size-select" class="field-label">Ανά σελίδα</label>
+            <select id="page-size-select" class="select-input">
+              <option value="5">5</option>
+              <option value="6" selected>6</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Πίνακας Προϊόντων -->
+        <div class="table-surface">
+          <table id="products-table" class="data-table">
+            <caption class="sr-only">Πίνακας προϊόντων του Mini e-shop KADRO</caption>
+            <thead>
+              <tr>
+                <th scope="col" aria-sort="none">
+                  <button type="button" class="sort-btn" data-sort="name">
+                    <span>Προϊόν</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" aria-sort="none">
+                  <button type="button" class="sort-btn" data-sort="category">
+                    <span>Κατηγορία</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="col-numeric" aria-sort="none">
+                  <button type="button" class="sort-btn sort-btn-right" data-sort="price">
+                    <span>Τιμή</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" aria-sort="none">
+                  <button type="button" class="sort-btn" data-sort="available">
+                    <span>Διαθεσιμότητα</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="col-actions">Ενέργειες</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+
+          <!-- Κενή Κατάσταση (Δεν βρέθηκαν προϊόντα) -->
+          <div id="empty-state" class="empty-state" hidden>
+            <p id="empty-state-title" class="empty-state-title">Δεν βρέθηκαν προϊόντα</p>
+            <p id="empty-state-desc" class="empty-state-desc">
+              Δοκιμάστε διαφορετικό όρο αναζήτησης ή καθαρίστε τα ενεργά φίλτρα.
+            </p>
+            <button type="button" id="reset-filters-btn" class="btn btn-secondary">
+              Επαναφορά φίλτρων
+            </button>
+          </div>
+        </div>
+
+        <!-- Σελιδοποίηση (Bonus) -->
+        <nav id="pagination-bar" class="pagination-bar" aria-label="Σελιδοποίηση καταλόγου">
+          <p id="pagination-info" class="pagination-info tabular-nums"></p>
+          <div id="pagination-controls" class="pagination-controls"></div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Ενότητα 2: Φόρμα Προϊόντος (Προσθήκη / Επεξεργασία) & Εξαγωγή/Εισαγωγή Αρχείων -->
+    <section id="product-form-section" class="content-section section-bordered" aria-labelledby="product-form-heading">
+      <div class="container split-layout">
+        <!-- Φόρμα Προϊόντος -->
+        <div class="panel-primary">
+          <div class="section-header compact">
+            <div>
+              <h2 id="product-form-heading" class="section-title">02. Προσθήκη Νέου Προϊόντος</h2>
+              <p id="product-form-subtitle" class="section-subtitle">
+                Συμπληρώστε τα στοιχεία για να προσθέσετε νέο είδος στον κατάλογο.
+              </p>
+            </div>
+            <button type="button" id="cancel-edit-btn" class="btn btn-ghost" hidden>
+              Ακύρωση επεξεργασίας
+            </button>
+          </div>
+
+          <form id="product-form" class="editorial-form" novalidate>
+            <input type="hidden" id="product-id" name="id" />
+
+            <div class="form-grid">
+              <div class="form-field form-field-full">
+                <label for="product-name" class="field-label">
+                  Όνομα προϊόντος <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="product-name"
+                  name="name"
+                  class="text-input"
+                  required
+                  minlength="2"
+                  maxlength="120"
+                  placeholder="π.χ. Μηχανικό Πληκτρολόγιο Keychron Q1 Pro"
+                  autocomplete="off"
+                />
+                <p id="product-name-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="product-category" class="field-label">
+                  Κατηγορία <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <select id="product-category" name="category" class="select-input" required>
+                  <option value="">Επιλέξτε κατηγορία</option>
+                  <option value="Πληκτρολόγια">Πληκτρολόγια</option>
+                  <option value="Ποντίκια">Ποντίκια</option>
+                  <option value="Οθόνες">Οθόνες</option>
+                  <option value="Ήχος">Ήχος</option>
+                  <option value="Αξεσουάρ Γραφείου">Αξεσουάρ Γραφείου</option>
+                </select>
+                <p id="product-category-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="product-price" class="field-label">
+                  Τιμή (€) <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="product-price"
+                  name="price"
+                  class="text-input tabular-nums"
+                  required
+                  min="0.01"
+                  max="99999"
+                  step="0.01"
+                  placeholder="0.00"
+                />
+                <p id="product-price-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field form-field-full">
+                <label for="product-availability" class="field-label">
+                  Διαθεσιμότητα <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <select id="product-availability" name="available" class="select-input" required>
+                  <option value="true">Διαθέσιμο</option>
+                  <option value="false">Εξαντλημένο</option>
+                </select>
+                <p id="product-availability-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field form-field-full">
+                <label for="product-description" class="field-label">
+                  Σύντομη περιγραφή <span class="optional-mark">(προαιρετικό)</span>
+                </label>
+                <textarea
+                  id="product-description"
+                  name="description"
+                  class="textarea-input"
+                  rows="2"
+                  maxlength="180"
+                  placeholder="Βασικά τεχνικά χαρακτηριστικά ή υλικά κατασκευής (έως 180 χαρακτήρες)."
+                ></textarea>
+                <p id="product-description-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="product-submit-btn" class="btn btn-primary">
+                Αποθήκευση προϊόντος
+              </button>
+              <button type="button" id="product-reset-btn" class="btn btn-secondary">
+                Καθαρισμός
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Εργαλειοθήκη Εξαγωγής & Εισαγωγής (Bonus) -->
+        <aside id="data-tools-section" class="panel-secondary" aria-labelledby="data-tools-heading">
+          <h2 id="data-tools-heading" class="aside-title">Εξαγωγή &amp; Εισαγωγή</h2>
+          <p class="aside-copy">
+            Κατεβάστε τον κατάλογο προϊόντων σε JSON ή CSV (συμβατό με Excel), ή εισάγετε νέα προϊόντα από αρχείο JSON με αυτόματο έλεγχο εγκυρότητας και απόρριψη διπλότυπων.
+          </p>
+
+          <div class="tool-group">
+            <h3 class="tool-group-label">Εξαγωγή καταλόγου</h3>
+            <div class="button-row">
+              <button type="button" id="export-json-btn" class="btn btn-secondary">
+                Εξαγωγή JSON
+              </button>
+              <button type="button" id="export-csv-btn" class="btn btn-secondary">
+                Εξαγωγή CSV
+              </button>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <h3 class="tool-group-label">Εισαγωγή από JSON</h3>
+            <p class="helper-text">
+              Αναμένεται πίνακας JSON αντικειμένων με πεδία: <code>name</code>, <code>category</code>, <code>price</code>, <code>available</code>.
+            </p>
+            <label for="import-json-input" class="btn btn-secondary file-trigger">
+              Επιλογή αρχείου JSON
+            </label>
+            <input
+              type="file"
+              id="import-json-input"
+              class="sr-only"
+              accept=".json,application/json"
+            />
+            <div id="import-report" class="import-report" aria-live="polite" hidden></div>
+          </div>
+
+          <div class="tool-group tool-group-divider">
+            <h3 class="tool-group-label">Αρχικοποίηση</h3>
+            <p class="helper-text">
+              Επαναφέρει τα 12 ενδεικτικά προϊόντα τεχνολογίας στο <code>localStorage</code> (κλειδί <code>products</code>).
+            </p>
+            <button type="button" id="restore-seed-btn" class="btn btn-ghost-danger">
+              Επαναφορά ενδεικτικού καταλόγου
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Ενότητα 3: Φόρμα Εγγραφής Πελάτη με Live Validation & Constraint Validation API -->
+    <section id="registration-section" class="content-section section-bordered" aria-labelledby="registration-heading">
+      <div class="container split-layout registration-layout">
+        <div class="panel-primary">
+          <div class="section-header compact">
+            <div>
+              <h2 id="registration-heading" class="section-title">03. Εγγραφή Πελάτη</h2>
+              <p class="section-subtitle">
+                Ζωντανή επικύρωση σε κάθε πεδίο με HTML5 γνωρίσματα και Constraint Validation API.
+              </p>
+            </div>
+          </div>
+
+          <form id="customer-form" class="editorial-form" novalidate>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="customer-first-name" class="field-label">
+                  Όνομα <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="customer-first-name"
+                  name="firstName"
+                  class="text-input"
+                  required
+                  pattern="^[Α-ΡΣ-Ω]+(?:[ -][Α-ΡΣ-Ω]+)*$"
+                  placeholder="π.χ. ΓΕΩΡΓΙΟΣ ή ΑΝΝΑ-ΜΑΡΙΑ"
+                  autocomplete="given-name"
+                />
+                <p class="field-hint">Κεφαλαία ελληνικά χωρίς τόνους (επιτρέπεται κενό ή παύλα).</p>
+                <p id="customer-first-name-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="customer-last-name" class="field-label">
+                  Επώνυμο <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="customer-last-name"
+                  name="lastName"
+                  class="text-input"
+                  required
+                  pattern="^[Α-ΡΣ-Ω]+(?:[ -][Α-ΡΣ-Ω]+)*$"
+                  placeholder="π.χ. ΠΑΠΑΔΟΠΟΥΛΟΣ"
+                  autocomplete="family-name"
+                />
+                <p class="field-hint">Κεφαλαία ελληνικά χωρίς τόνους (επιτρέπεται κενό ή παύλα).</p>
+                <p id="customer-last-name-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field form-field-full">
+                <label for="customer-email" class="field-label">
+                  Email <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="customer-email"
+                  name="email"
+                  class="text-input"
+                  required
+                  placeholder="name@example.gr"
+                  autocomplete="email"
+                />
+                <p id="customer-email-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="customer-role" class="field-label">
+                  Ρόλος <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <select id="customer-role" name="role" class="select-input" required>
+                  <option value="User" selected>User (Πελάτης)</option>
+                  <option value="Admin">Admin (Διαχειριστής)</option>
+                </select>
+                <p id="customer-role-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <div class="form-field">
+                <label for="customer-reg-date" class="field-label">
+                  Ημερομηνία εγγραφής <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="customer-reg-date"
+                  name="registeredAt"
+                  class="text-input tabular-nums"
+                  required
+                />
+                <p id="customer-reg-date-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+
+              <!-- Κωδικός Πρόσβασης + Ζωντανή Ένδειξη Κανόνων Πολυπλοκότητας (✔ / ✘) -->
+              <div class="form-field form-field-full password-layout">
+                <div class="password-input-col">
+                  <label for="customer-password" class="field-label">
+                    Κωδικός πρόσβασης (Password) <span class="required-mark" aria-hidden="true">*</span>
+                  </label>
+                  <div class="password-input-wrap">
+                    <input
+                      type="password"
+                      id="customer-password"
+                      name="password"
+                      class="text-input has-trailing-action"
+                      required
+                      minlength="8"
+                      pattern="(?=.*[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ])(?=.*[0-9])(?=.*[!@#$%^&amp;*]).{8,}"
+                      placeholder="Τουλάχιστον 8 χαρακτήρες"
+                      autocomplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      id="toggle-password-btn"
+                      class="input-inline-btn"
+                      aria-label="Εμφάνιση κωδικού πρόσβασης"
+                      aria-pressed="false"
+                    >
+                      Εμφάνιση
+                    </button>
+                  </div>
+                  <p id="customer-password-feedback" class="field-feedback" aria-live="polite"></p>
+                </div>
+
+                <ul class="password-rules" aria-label="Κανόνες πολυπλοκότητας κωδικού">
+                  <li id="rule-length" class="password-rule" data-met="false">
+                    <span class="rule-mark" aria-hidden="true">✘</span>
+                    <span>Τουλάχιστον 8 χαρακτήρες</span>
+                  </li>
+                  <li id="rule-letter" class="password-rule" data-met="false">
+                    <span class="rule-mark" aria-hidden="true">✘</span>
+                    <span>Τουλάχιστον ένα γράμμα</span>
+                  </li>
+                  <li id="rule-number" class="password-rule" data-met="false">
+                    <span class="rule-mark" aria-hidden="true">✘</span>
+                    <span>Τουλάχιστον έναν αριθμό</span>
+                  </li>
+                  <li id="rule-symbol" class="password-rule" data-met="false">
+                    <span class="rule-mark" aria-hidden="true">✘</span>
+                    <span>Ένα από τα σύμβολα !@#$%^&amp;*</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="form-field form-field-full">
+                <label for="customer-confirm-password" class="field-label">
+                  Επιβεβαίωση password <span class="required-mark" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="password"
+                  id="customer-confirm-password"
+                  name="confirmPassword"
+                  class="text-input"
+                  required
+                  placeholder="Επαναλάβετε τον κωδικό πρόσβασης"
+                  autocomplete="new-password"
+                />
+                <p id="customer-confirm-password-feedback" class="field-feedback" aria-live="polite"></p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="customer-submit-btn" class="btn btn-primary">
+                Εγγραφή πελάτη
+              </button>
+              <button type="button" id="customer-reset-btn" class="btn btn-secondary">
+                Καθαρισμός φόρμας
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Εγγεγραμμένοι Πελάτες (επαλήθευση μοναδικότητας email & αποθήκευσης) -->
+        <aside class="panel-secondary" aria-labelledby="registered-customers-heading">
+          <div class="aside-header-row">
+            <h3 id="registered-customers-heading" class="aside-title">Εγγεγραμμένοι Πελάτες</h3>
+            <span id="customers-count" class="aside-count tabular-nums">0</span>
+          </div>
+          <p class="aside-copy">
+            Τα στοιχεία αποθηκεύονται τοπικά στο κλειδί <code>users</code> για τον έλεγχο μοναδικότητας email. Οι κωδικοί δεν εμφανίζονται ποτέ στη διεπαφή.
+          </p>
+
+          <ul id="customers-list" class="customers-list" aria-live="polite"></ul>
+          <p id="customers-empty" class="helper-text" hidden>
+            Δεν υπάρχουν ακόμη εγγεγραμμένοι πελάτες.
+          </p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">KADRO · Mini E-shop Τεχνολογίας &amp; Περιφερειακών</p>
+      <p class="footer-note">Καθαρή υλοποίηση HTML5, CSS3 &amp; JavaScript με τοπική αποθήκευση.</p>
+    </div>
+  </footer>
+
+  <!-- Προσβάσιμο Modal Επιβεβαίωσης (χωρίς window.confirm) -->
+  <div
+    id="confirm-modal"
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-modal-title"
+    aria-describedby="confirm-modal-message"
+    hidden
+  >
+    <div class="modal-dialog">
+      <h2 id="confirm-modal-title" class="modal-title">Επιβεβαίωση ενέργειας</h2>
+      <p id="confirm-modal-message" class="modal-message"></p>
+      <div class="modal-actions">
+        <button type="button" id="confirm-cancel-btn" class="btn btn-secondary">Ακύρωση</button>
+        <button type="button" id="confirm-ok-btn" class="btn btn-danger">Διαγραφή</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Περιοχή Ειδοποιήσεων (Toasts & Αναίρεση Διαγραφής) -->
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

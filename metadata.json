@@ -1,0 +1,6 @@
+{
+  "name": "KADRO — Mini E-shop Τεχνολογίας & Περιφερειακών",
+  "description": "Εφαρμογή μίας σελίδας (SPA) σε καθαρό HTML5, CSS3 και JavaScript για διαχείριση καταλόγου προϊόντων (CRUD), αναζήτηση, φιλτράρισμα, ταξινόμηση, σελιδοποίηση, εξαγωγή/εισαγωγή και εγγραφή πελατών με ζωντανή επικύρωση.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

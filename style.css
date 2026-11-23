@@ -1,0 +1,1352 @@
+/* ==========================================================================
+   KADRO — Mini E-shop Τεχνολογίας & Περιφερειακών
+   Μινιμαλιστικό editorial design system σε φωτεινό φόντο (60-30-10)
+   Αυστηρά Vanilla CSS3, πλήρως responsive, χωρίς εξωτερικά frameworks.
+   ========================================================================== */
+
+:root {
+  /* 60% Κύριος Καμβάς */
+  --bg-canvas: #f8f8f6;
+
+  /* 30% Δομικές Επιφάνειες, Hairlines & Τυπογραφία */
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f1ec;
+  --bg-hover: #f4f4ef;
+  --border-hairline: #e2e2dc;
+  --border-strong: #c8c8c0;
+  --text-primary: #141413;
+  --text-secondary: #585852;
+  --text-muted: #6e6e67;
+
+  /* 10% Σημεία Δράσης & Σημασιολογικές Καταστάσεις */
+  --accent-primary: #141413;
+  --accent-primary-hover: #2d2d2a;
+  --accent-interactive: #1d4ed8;
+  --status-valid: #15803d;
+  --status-valid-bg: #f0fdf4;
+  --status-error: #b91c1c;
+  --status-error-bg: #fef2f2;
+  --status-danger-hover: #991b1b;
+
+  /* Τυπογραφία (2+1 rule) */
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Χωρικά Μεγέθη & Ακτίνες */
+  --container-max: 1200px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --shadow-subtle: 0 1px 2px rgba(20, 20, 19, 0.04);
+  --shadow-overlay: 0 16px 40px rgba(20, 20, 19, 0.14);
+
+  /* Καμπύλη κίνησης (<= 200ms) */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+}
+
+/* ---------- Reset & Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: var(--bg-subtle);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-interactive);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  background: var(--accent-primary);
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.tabular-nums {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ---------- Top Bar (Αυστηρό Συμβόλαιο 3 Ζωνών) ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: rgba(248, 248, 246, 0.94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: 64px;
+  padding-block: 0.75rem;
+}
+
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  min-width: 0;
+}
+
+.nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-block: 0.25rem;
+  border-bottom: 1px solid transparent;
+  transition: color var(--duration-fast) var(--ease-settle),
+    border-color var(--duration-fast) var(--ease-settle);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ---------- Κουμπιά ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 40px;
+  padding: 0.5rem 1.125rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-settle),
+    border-color var(--duration-fast) var(--ease-settle),
+    color var(--duration-fast) var(--ease-settle),
+    transform var(--duration-fast) var(--ease-settle);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-subtle);
+  border-color: var(--text-primary);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-hairline);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
+
+.btn-ghost-danger {
+  background-color: transparent;
+  color: var(--status-error);
+  border-color: var(--border-hairline);
+}
+
+.btn-ghost-danger:hover:not(:disabled) {
+  background-color: var(--status-error-bg);
+  border-color: var(--status-error);
+}
+
+.btn-danger {
+  background-color: var(--status-error);
+  color: #ffffff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--status-danger-hover);
+}
+
+.btn-table {
+  min-height: 34px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* ---------- Εισαγωγή & Δείκτες Καταλόγου ---------- */
+
+.intro-section {
+  padding-top: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.intro-header {
+  max-width: 44rem;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.625rem;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: var(--text-primary);
+}
+
+.page-lead {
+  margin-top: 0.875rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 60ch;
+}
+
+.metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 2.25rem;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
+  background-color: var(--bg-surface);
+}
+
+.metric-item {
+  padding: 1.25rem 1.5rem;
+  border-right: 1px solid var(--border-hairline);
+}
+
+.metric-item:last-child {
+  border-right: none;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.375rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* ---------- Ενότητες Περιεχομένου ---------- */
+
+.content-section {
+  padding-block: 3rem;
+}
+
+.section-bordered {
+  border-top: 1px solid var(--border-hairline);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.section-header.compact {
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.section-subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.results-summary {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Γραμμή Αναζήτησης & Φίλτρων ---------- */
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) minmax(160px, 1fr) minmax(150px, 0.9fr) minmax(105px, 0.55fr);
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.toolbar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.field-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.required-mark {
+  color: var(--status-error);
+}
+
+.optional-mark {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.search-input-wrap,
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.text-input,
+.select-input,
+.textarea-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0.5625rem 0.75rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  transition: border-color var(--duration-fast) var(--ease-settle),
+    box-shadow var(--duration-fast) var(--ease-settle);
+}
+
+.text-input.has-leading-icon {
+  padding-left: 2.25rem;
+}
+
+.text-input.has-trailing-action {
+  padding-right: 5.5rem;
+}
+
+.textarea-input {
+  min-height: 76px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.text-input:hover,
+.select-input:hover,
+.textarea-input:hover {
+  border-color: var(--text-secondary);
+}
+
+.text-input:focus,
+.select-input:focus,
+.textarea-input:focus {
+  outline: none;
+  border-color: var(--accent-interactive);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+}
+
+.text-input.is-valid,
+.select-input.is-valid,
+.textarea-input.is-valid {
+  border-color: var(--status-valid);
+}
+
+.text-input.is-invalid,
+.select-input.is-invalid,
+.textarea-input.is-invalid {
+  border-color: var(--status-error);
+  background-color: var(--status-error-bg);
+}
+
+.input-inline-btn {
+  position: absolute;
+  right: 0.375rem;
+  min-height: 32px;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-settle),
+    background-color var(--duration-fast) var(--ease-settle);
+}
+
+.input-inline-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--border-hairline);
+}
+
+/* ---------- Πίνακας Προϊόντων ---------- */
+
+.table-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-subtle);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table thead th {
+  background-color: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-hairline);
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.data-table tbody td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-hairline);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr {
+  transition: background-color var(--duration-fast) var(--ease-settle);
+}
+
+.data-table tbody tr:hover {
+  background-color: var(--bg-hover);
+}
+
+.data-table tbody tr.is-editing {
+  background-color: #eff6ff;
+}
+
+.col-numeric {
+  text-align: right;
+}
+
+.col-actions {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0.125rem 0;
+  cursor: pointer;
+  color: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-settle);
+}
+
+.sort-btn-right {
+  margin-left: auto;
+}
+
+.sort-btn:hover {
+  color: var(--text-primary);
+}
+
+th[aria-sort='ascending'] .sort-btn,
+th[aria-sort='descending'] .sort-btn {
+  color: var(--accent-interactive);
+}
+
+.sort-indicator {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.65;
+}
+
+th[aria-sort='ascending'] .sort-indicator,
+th[aria-sort='descending'] .sort-indicator {
+  opacity: 1;
+}
+
+.product-title-cell {
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+.product-desc-cell {
+  margin-top: 0.2rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  max-width: 44ch;
+}
+
+.category-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.price-cell {
+  text-align: right;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Μηδενικά pill badges: καθαρό κείμενο + σύμβολο κατάστασης */
+.availability-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.availability-text.in-stock {
+  color: var(--status-valid);
+}
+
+.availability-text.out-of-stock {
+  color: var(--status-error);
+}
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* ---------- Κενή Κατάσταση ---------- */
+
+.empty-state {
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+}
+
+.empty-state-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-state-desc {
+  margin-top: 0.375rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Σελιδοποίηση ---------- */
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-settle),
+    border-color var(--duration-fast) var(--ease-settle),
+    color var(--duration-fast) var(--ease-settle);
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
+
+.page-btn[aria-current='page'] {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Δίστηλες Ενότητες (Φόρμες & Πλαϊνά Πάνελ) ---------- */
+
+.split-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.panel-primary {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.panel-secondary {
+  padding-top: 0.25rem;
+}
+
+.editorial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.field-feedback {
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.field-feedback.is-valid {
+  color: var(--status-valid);
+}
+
+.field-feedback.is-invalid {
+  color: var(--status-error);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+/* ---------- Κανόνες Πολυπλοκότητας Password (Δίπλα στο πεδίο) ---------- */
+
+.password-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(220px, 0.85fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.password-input-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.password-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-top: 1.75rem;
+}
+
+.password-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  transition: color var(--duration-fast) var(--ease-settle);
+}
+
+.password-rule .rule-mark {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  width: 1rem;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--status-error);
+}
+
+.password-rule[data-met='true'] {
+  color: var(--status-valid);
+}
+
+.password-rule[data-met='true'] .rule-mark {
+  color: var(--status-valid);
+}
+
+/* ---------- Πλαϊνές Ενότητες (Εξαγωγή/Εισαγωγή & Εγγεγραμμένοι Πελάτες) ---------- */
+
+.aside-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.aside-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.aside-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.aside-copy {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.tool-group {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.tool-group-divider {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.tool-group-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.helper-text {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.file-trigger {
+  width: fit-content;
+}
+
+.import-report {
+  margin-top: 0.5rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  font-size: 0.8125rem;
+}
+
+.import-report-summary {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.import-report-errors {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--status-error);
+}
+
+/* ---------- Λίστα Εγγεγραμμένων Πελατών ---------- */
+
+.customers-list {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.customer-row {
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.customer-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+}
+
+.customer-meta {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.meta-sep {
+  color: var(--border-strong);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid var(--border-hairline);
+  padding-block: 2rem;
+  margin-top: 2rem;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.footer-brand {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ---------- Modal Επιβεβαίωσης ---------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background-color: rgba(20, 20, 19, 0.45);
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal-dialog {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-overlay);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-message {
+  margin-top: 0.625rem;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+
+/* ---------- Ειδοποιήσεις Toast & Undo Διαγραφής ---------- */
+
+.toast-region {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  max-width: min(420px, calc(100vw - 2rem));
+}
+
+.toast {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background-color: var(--accent-primary);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+  font-size: 0.875rem;
+  animation: toast-in var(--duration-fast) var(--ease-settle);
+}
+
+.toast.toast-error {
+  background-color: var(--status-error);
+}
+
+.toast-undo-btn {
+  min-height: 32px;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color var(--duration-fast) var(--ease-settle);
+}
+
+.toast-undo-btn:hover {
+  background-color: rgba(255, 255, 255, 0.24);
+}
+
+.toast-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.65);
+  transform-origin: left center;
+  animation: undo-countdown linear forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes undo-countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ---------- Responsive (Tablet & Κινητό χωρίς οριζόντια κύλιση) ---------- */
+
+@media (max-width: 960px) {
+  .metrics-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .metric-item:nth-child(2) {
+    border-right: none;
+  }
+
+  .metric-item:nth-child(1),
+  .metric-item:nth-child(2) {
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toolbar-search {
+    grid-column: 1 / -1;
+  }
+
+  .split-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .password-layout {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .password-rules {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-inline: 1rem;
+  }
+
+  .header-inner {
+    gap: 1rem;
+    min-height: 56px;
+  }
+
+  .primary-nav {
+    display: none;
+  }
+
+  .intro-section {
+    padding-top: 2rem;
+    padding-bottom: 1.75rem;
+  }
+
+  .content-section {
+    padding-block: 2rem;
+  }
+
+  .panel-primary {
+    padding: 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Μετατροπή πίνακα σε καθαρές κάρτες για μηδενική οριζόντια κύλιση (διατηρώντας τα κουμπιά ταξινόμησης) */
+  .data-table,
+  .data-table thead,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .data-table thead {
+    background-color: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-hairline);
+    padding: 0.625rem 1rem;
+  }
+
+  .data-table thead tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+  }
+
+  .data-table thead th {
+    display: inline-flex;
+    padding: 0.25rem 0;
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .data-table thead th.col-actions {
+    display: none;
+  }
+
+  .data-table tbody tr {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .data-table tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.375rem 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .data-table tbody td::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .data-table tbody td[data-label='Προϊόν'] {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid var(--border-hairline);
+    margin-bottom: 0.375rem;
+  }
+
+  .data-table tbody td[data-label='Προϊόν']::before {
+    display: none;
+  }
+
+  .data-table tbody td[data-label='Ενέργειες'] {
+    padding-top: 0.75rem;
+    justify-content: flex-end;
+  }
+
+  .data-table tbody td[data-label='Ενέργειες']::before {
+    display: none;
+  }
+
+  .btn,
+  .page-btn {
+    min-height: 44px;
+  }
+
+  .toast-region {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-item {
+    border-right: none;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .metric-item:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
